@@ -11,7 +11,7 @@
 
 struct sort_by_rad
 {
-	bool operator()(Circle* x, Circle* y)
+	bool operator()(std::shared_ptr<Circle> x, std::shared_ptr<Circle> y)
 	{
 		return x->get_radius() < y->get_radius();
 	}
@@ -30,7 +30,7 @@ int main() {
 	int n = 0;
 	std::cout << "Enter count of objects: ";
 	std::cin >> n;
-	std::vector<Curves*> vector_curves(n);
+	std::vector<std::shared_ptr<Curves>> vector_curves(n);
 
 	for (int i = 0; i < vector_curves.size(); i++) {
 		int c_type = type(gen);
@@ -41,16 +41,16 @@ int main() {
 		double st = steps(gen);
 		switch (c_type) {
 		case 1: {
-			vector_curves[i] = new Circle(x, y, z, rad);
+			vector_curves[i] = std::make_shared<Circle>(x, y, z, rad);
 			break;
 			}
 		case 2: {
 			double rad2 = radiuses(gen);
-			vector_curves[i] = new Ellipse(x, y, z, rad, rad2);
+			vector_curves[i] = std::make_shared<Ellipse>(x, y, z, rad, rad2);
 			break;
 		}
 		case 3: {
-			vector_curves[i] = new Helixe(x, y, z, rad, st);
+			vector_curves[i] = std::make_shared<Helixe>(x, y, z, rad, st);
 			break;
 		}
 		default: break;
@@ -79,11 +79,11 @@ int main() {
 
 	double radius_sum = 0.0;
 
-	std::vector<Circle*> circ_vector;
+	std::vector<std::shared_ptr<Circle>> circ_vector;
 	for (auto curv : vector_curves) {
-		if (dynamic_cast<Circle*>(curv)
-			&& !dynamic_cast<Helixe*>(curv)) {
-			circ_vector.push_back(static_cast<Circle*>(curv));
+		if (std::dynamic_pointer_cast<Circle>(curv)
+			&& !std::dynamic_pointer_cast<Helixe>(curv)) {
+			circ_vector.push_back(std::static_pointer_cast<Circle>(curv));
 			radius_sum += curv->get_radius();
 		}
 	}
